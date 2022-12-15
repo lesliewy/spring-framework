@@ -128,6 +128,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 
 		if (this.rollbackRules != null) {
 			for (RollbackRuleAttribute rule : this.rollbackRules) {
+				// 匹配异常. 如果抛出的异常类型，和事务定义的异常类型匹配，证明该异常需要捕获。
 				int depth = rule.getDepth(ex);
 				if (depth >= 0 && depth < deepest) {
 					deepest = depth;

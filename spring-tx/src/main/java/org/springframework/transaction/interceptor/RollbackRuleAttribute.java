@@ -159,7 +159,14 @@ public class RollbackRuleAttribute implements Serializable{
 	}
 
 
+	/**
+	 * 之所以用递归，不仅需要判断抛出异常的本身，还需要判断它继承的父类异常，满足任意一个即可捕获。
+	 * @param exceptionType 用户代码抛出的异常类型.
+	 * @param depth
+	 * @return
+	 */
 	private int getDepth(Class<?> exceptionType, int depth) {
+		// this.exceptionType 是事务定义的异常类型.
 		if (this.exceptionType != null) {
 			if (this.exceptionType.equals(exceptionType)) {
 				// Found it!

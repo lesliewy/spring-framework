@@ -62,6 +62,7 @@ public abstract class DelegatingTransactionAttribute extends DelegatingTransacti
 
 	@Override
 	public boolean rollbackOn(Throwable ex) {
+		// org.springframework.transaction.interceptor.RuleBasedTransactionAttribute.rollbackOn
 		return this.targetAttribute.rollbackOn(ex);
 	}
 
