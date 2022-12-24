@@ -121,6 +121,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 		}
 		else {
 			// We need to work it out.
+			/** 获取事务的属性信息, 并放入缓存. @Transactional 的属性会转换成 TransactionAttribute */
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
 			if (txAttr == null) {
@@ -190,6 +191,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 				return txAttr;
 			}
 			// Last fallback is the class of the original method.
+			/** 一般进入 AnnotationTransactionAttributeSource#findTransactionAttribute(java.lang.Class) */
 			txAttr = findTransactionAttribute(method.getDeclaringClass());
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;

@@ -245,10 +245,12 @@ public abstract class AopUtils {
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
 		for (Class<?> clazz : classes) {
+			/** 遍历bean的所有方法，进行匹配 */
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
 				if (introductionAwareMethodMatcher != null ?
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
+						/** 这里进入 TransactionAttributeSourcePointcut */
 						methodMatcher.matches(method, targetClass)) {
 					return true;
 				}
@@ -284,6 +286,7 @@ public abstract class AopUtils {
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
+		/** 一般是进入这里. @Pointcut */
 		else if (advisor instanceof PointcutAdvisor pca) {
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
