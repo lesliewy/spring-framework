@@ -239,8 +239,10 @@ class ConfigurationClassParser {
 		}
 
 		// Recursively process the configuration class and its superclass hierarchy.
+		/** SourceClass类中会封装配置类上注解的详细信息 */
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			/** 对于@Bean: 会将解析出的标注了@Bean注解的元数据封装成BeanMethod对象，添加到一个LinkedHashSet类型的beanMethods集合中。*/
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -256,6 +258,7 @@ class ConfigurationClassParser {
 	 * @param sourceClass a source class
 	 * @return the superclass, or {@code null} if none found or previously processed
 	 */
+	/** 处理 ConfigurationClass 中的各种注解 */
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
@@ -317,6 +320,10 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
+		/** @Bean 注解处理
+		 * 获取到标注了@Bean注解的方法的元数据集合后，遍历方法的元数据集合，将方法的元数据methodMetadata和配置类configClass传入BeanMethod类的构造方法，
+		 * 创建BeanMethod对象，并调用configClass的addBeanMethod()方法传入创建的BeanMethod对象
+		 */
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));

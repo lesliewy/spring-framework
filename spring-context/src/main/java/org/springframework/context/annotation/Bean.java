@@ -224,6 +224,7 @@ public @interface Bean {
 	 * @since 4.3.3
 	 * @see #name
 	 */
+	/** 指定注入到IOC容器中的Bean的名称，可以指定多个名称。如果不指定name属性和value属性的值，则注入到IOC容器中的Bean的名称默认是方法的名称。 */
 	@AliasFor("name")
 	String[] value() default {};
 
@@ -244,6 +245,7 @@ public @interface Bean {
 	 * that are not meant to get in the way of beans of the same type in other places.
 	 * @since 5.1
 	 */
+	/** 表示是否支持自动按照类型注入到其他的Bean中。此属性会影响@Autowired注解，不会响应@Resource注解，默认为true，表示支持自动按照类型注入到其他的Bean中。*/
 	boolean autowireCandidate() default true;
 
 	/**

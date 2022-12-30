@@ -174,6 +174,9 @@ class ConfigurationClassBeanDefinitionReader {
 	 * Read the given {@link BeanMethod}, registering bean definitions
 	 * with the BeanDefinitionRegistry based on its contents.
 	 */
+	/** 解析了@Bean注解中的属性信息，并将解析出的信息封装到一个BeanDefinition对象中，最终会调用registry对象的registerBeanDefinition()方法将封装的
+	 * BeanDefinition对象注册到IOC容器中。
+	 */
 	private void loadBeanDefinitionsForBeanMethod(BeanMethod beanMethod) {
 		ConfigurationClass configClass = beanMethod.getConfigurationClass();
 		MethodMetadata metadata = beanMethod.getMetadata();
@@ -274,6 +277,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
+		/** DefaultListableBeanFactory: 将封装的BeanDefinition对象注册到IOC容器 */
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 
