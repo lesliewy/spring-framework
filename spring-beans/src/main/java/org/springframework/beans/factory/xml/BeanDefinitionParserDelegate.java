@@ -430,6 +430,7 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		/** id(name)唯一性校验 */
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
@@ -514,14 +515,40 @@ public class BeanDefinitionParserDelegate {
 		try {
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			/** 解析bean的其它属性，其实就是读取其配置，调用相应的setter方法保存在BeanDefinition中 */
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
+			/** meta子元素  <meta key="name" value="skywalker"/>*/
 			parseMetaElements(ele, bd);
+			/** lookup子元素  <lookup-method name="getFruit" bean="apple"/> . 当一个bean的某个方法被设置为lookup-method后，每次调用此方法时，都会返回一个新的指定bean的对象*/
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			/**
+			 * replace-mothod 子元素: 用于替换bean里面的特定的方法实现，替换者必须实现Spring的MethodReplacer接口，有点像aop的意思。
+			 * <bean name="testBean" class="springroad.deomo.chap4.LookupMethodBean">
+			 *     <replaced-method name="test" replacer="replacer">
+			 *         <arg-type match="String" />
+			 *     </replaced-method>
+			 * </bean>
+			 *
+			 */
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			/**
+			 * constructor-arg 子元素:
+			 * <bean class="base.SimpleBean">
+			 *     <constructor-arg>
+			 *         <value type="java.lang.String">Cat</value>
+			 *     </constructor-arg>
+			 * </bean>
+			 */
 			parseConstructorArgElements(ele, bd);
+			/**
+			 * property子元素:
+			 * <bean class="base.SimpleBean">
+			 *     <property name="name" value="skywalker" />
+			 * </bean>
+			 */
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
 
