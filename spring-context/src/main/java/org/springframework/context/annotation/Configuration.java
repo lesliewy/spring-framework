@@ -458,6 +458,13 @@ public @interface Configuration {
 	 * behaviorally equivalent to removing the {@code @Configuration} stereotype.
 	 * @since 5.2
 	 */
+	/**
+	 * Full模式(proxyBeanMethods = true) :proxyBeanMethods参数设置为true时即为：Full 全模式。 该模式下注入容器中的同一个组件无论被取出多少次都是同一个bean实例，即单实例对象，在该模式下SpringBoot每次启动都会判断检查容器中是否存在该组件
+	 * Lite模式(proxyBeanMethods = false) :proxyBeanMethods参数设置为false时即为：Lite 轻量级模式。该模式下注入容器中的同一个组件无论被取出多少次都是不同的bean实例，即多实例对象，在该模式下SpringBoot每次启动会跳过检查容器中是否存在该组件
+	 * 什么时候用Full全模式，什么时候用Lite轻量级模式？
+	 * 当在你的同一个Configuration配置类中，注入到容器中的bean实例之间有依赖关系时，建议使用Full全模式
+	 * 当在你的同一个Configuration配置类中，注入到容器中的bean实例之间没有依赖关系时，建议使用Lite轻量级模式，以提高springboot的启动速度和性能
+	 */
 	boolean proxyBeanMethods() default true;
 
 	/**

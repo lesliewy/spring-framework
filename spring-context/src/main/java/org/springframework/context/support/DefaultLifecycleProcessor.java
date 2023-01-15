@@ -138,6 +138,9 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 
 	// Internal helpers
 
+	/**
+	 * 找到 Spring 容器的 Lifecycle 类型的 Bean，然后调用 start() 去启动。
+	 */
 	private void startBeans(boolean autoStartupOnly) {
 		Map<String, Lifecycle> lifecycleBeans = getLifecycleBeans();
 		Map<Integer, LifecycleGroup> phases = new TreeMap<>();
@@ -169,12 +172,14 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			for (String dependency : dependenciesForBean) {
 				doStart(lifecycleBeans, dependency, autoStartupOnly);
 			}
+			/** bean不在运行中并且(autoStartupOnly=false 或者 不是SmartLifecycle类型 或者 isAutoStartup() = true) */
 			if (!bean.isRunning() &&
 					(!autoStartupOnly || !(bean instanceof SmartLifecycle smartLifecycle) || smartLifecycle.isAutoStartup())) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Starting bean '" + beanName + "' of type [" + bean.getClass().getName() + "]");
 				}
 				try {
+					/** 调用生命周期Lifecycle Bean的start()方法 */
 					bean.start();
 				}
 				catch (Throwable ex) {

@@ -50,6 +50,17 @@ import java.lang.annotation.Target;
  * @see ImportBeanDefinitionRegistrar
  * @see ImportResource
  */
+
+/**
+ * org.springframework.context.support.AbstractApplicationContext#refresh()
+ * -> AbstractApplicationContext#invokeBeanFactoryPostProcessors(org.springframework.beans.factory.config.ConfigurableListableBeanFactory)
+ * -> PostProcessorRegistrationDelegate#invokeBeanDefinitionRegistryPostProcessors(java.util.Collection, org.springframework.beans.factory.support.BeanDefinitionRegistry, org.springframework.core.metrics.ApplicationStartup)
+ * -> ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
+ * -> ConfigurationClassParser#parse(java.util.Set)
+ * -> ConfigurationClassParser#processConfigurationClass(org.springframework.context.annotation.ConfigurationClass, java.util.function.Predicate)
+ * -> ConfigurationClassParser#processImports(): 包括处理 @Import, @ImportSelector, ImportBeanDefinitionRegistrar接口.
+ *
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
