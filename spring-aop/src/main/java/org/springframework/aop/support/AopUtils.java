@@ -250,7 +250,7 @@ public abstract class AopUtils {
 			for (Method method : methods) {
 				if (introductionAwareMethodMatcher != null ?
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
-						/** 这里进入 TransactionAttributeSourcePointcut */
+						/** 对于@Transactional: 这里进入 TransactionAttributeSourcePointcut */
 						methodMatcher.matches(method, targetClass)) {
 					return true;
 				}
@@ -320,6 +320,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
+			/** 匹配AOP的切面 */
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}

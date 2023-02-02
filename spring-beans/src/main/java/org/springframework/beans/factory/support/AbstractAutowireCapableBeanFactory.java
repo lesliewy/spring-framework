@@ -507,6 +507,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			/** 执行BeanPostProcessor: postProcessBeforeInitialization(), postProcessAfterInitialization() */
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -518,7 +519,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			/** 真正创建bean */
+			/** 真正创建bean, populateBean() initializeBean()在这里执行.  */
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -1128,6 +1129,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+		/**
+		 * AbstractAutoProxyCreator: AOP相关.
+		 * 包括: AOP前置处理. 会遍历程序所有的切面信息，然后将切面信息保存在缓存中
+		 * 		AOP后置处理. 从缓存中获取所有的切面信息来和当前bean的方法匹配，如果匹配上，会创建AOP代理对象。
+		 */
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
 			if (result != null) {

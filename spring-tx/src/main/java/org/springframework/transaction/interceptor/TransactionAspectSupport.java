@@ -337,11 +337,11 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			final InvocationCallback invocation) throws Throwable {
 
 		// If the transaction attribute is null, the method is non-transactional.
-		//获取我们的事务属源对象
+		/** 获取我们的事务属源对象 */
 		TransactionAttributeSource tas = getTransactionAttributeSource();
-		//通过事务属性源对象获取到我们的事务属性信息  AbstractFallbackTransactionAttributeSource.getTransactionAttribute
+		/** 通过事务属性源对象获取到我们的事务属性信息  AbstractFallbackTransactionAttributeSource.getTransactionAttribute */
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
-		//获取我们配置的事务管理器对象
+		/** 获取我们配置的事务管理器对象 */
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
 		if (this.reactiveAdapterRegistry != null && tm instanceof ReactiveTransactionManager) {
@@ -378,30 +378,30 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		}
 
 		PlatformTransactionManager ptm = asPlatformTransactionManager(tm);
-		//从tx属性对象中获取出标注了@Transactionl的方法描述符
+		/** 从tx属性对象中获取出标注了@Transactionl的方法描述符 */
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
-		//处理声明式事务
+		/** 处理声明式事务 */
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
-			//有没有必要创建事务. 创建事务入口.
+			/** 有没有必要创建事务. 创建事务入口. */
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
-				//调用钩子函数进行回调目标方法
+				/** 调用钩子函数进行回调目标方法 */
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
 				// target invocation exception
-				//抛出异常进行回滚处理
+				/** 抛出异常进行回滚处理 */
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
 			finally {
-				//清空我们的线程变量中transactionInfo的值
+				/** 清空我们的线程变量中transactionInfo的值 */
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -413,7 +413,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 
-			//提交事务
+			/** 提交事务 */
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
