@@ -60,6 +60,11 @@ import org.springframework.util.PatternMatchUtils;
  * @see org.springframework.stereotype.Service
  * @see org.springframework.stereotype.Controller
  */
+
+/**
+ * 构造函数中会添加filters, 包括了@Component.
+ * scan()时添加默认的注解处理器.
+ */
 public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
 
 	private final BeanDefinitionRegistry registry;
@@ -162,6 +167,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		this.registry = registry;
 
+		/** 默认的filters, 包括@component. 而@Service, @Controller, @Repository都继承了@Component.*/
 		if (useDefaultFilters) {
 			registerDefaultFilters();
 		}
@@ -255,6 +261,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 		// Register annotation config processors, if necessary.
 		if (this.includeAnnotationConfig) {
+			/** 添加一些默认的注解处理器，其中就包括@Configuration的ConfigurationClassPostProcessor. */
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
 
@@ -289,6 +296,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					/** 注册beanDefinitions. */
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

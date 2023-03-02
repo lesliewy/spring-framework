@@ -221,6 +221,9 @@ class ConfigurationClassParser {
 			return;
 		}
 
+		/** 这里会用configurationClasses作为缓存，如果之前已经解析过,就删除以前的，确保只有一个bean.
+		 *  而@Component不会，所以调用@Configuration类中的@Bean注解的方法，返回的是同一个示例；而调用@Component类中的@Bean注解的方法，返回的是一个新的实例。
+		 **/
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
