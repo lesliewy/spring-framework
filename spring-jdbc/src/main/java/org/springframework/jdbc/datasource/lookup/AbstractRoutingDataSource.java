@@ -42,9 +42,11 @@ import org.springframework.util.CollectionUtils;
  */
 public abstract class AbstractRoutingDataSource extends AbstractDataSource implements InitializingBean {
 
+	/** 配置datasource时，需要指明所有的datasources. */
 	@Nullable
 	private Map<Object, Object> targetDataSources;
 
+	/** 默认的datasource, 用在没找到datasource时. */
 	@Nullable
 	private Object defaultTargetDataSource;
 
@@ -52,6 +54,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 
 	private DataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
 
+	/** 将targetDataSources处理成map形式, 方便动态选择. */
 	@Nullable
 	private Map<Object, DataSource> resolvedDataSources;
 
