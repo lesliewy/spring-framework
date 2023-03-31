@@ -123,6 +123,11 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 	 */
 	@Override
 	public boolean rollbackOn(Throwable ex) {
+		/**
+		 * winner: 在rollbackFor和noRollbackFor中找到距离实际抛出的ex最近的异常.
+		 * 假如 rollbackFor=Exception.class, noRollbackFor=RuntimeException.class,  程序抛出了RuntimeException, 则距离rollbackFor的距离是1, 距离noRollbackFor的距离是0
+		 * noRollbackFor是winner, 不会回滚。
+		 */
 		RollbackRuleAttribute winner = null;
 		int deepest = Integer.MAX_VALUE;
 

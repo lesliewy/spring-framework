@@ -501,6 +501,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		Class<?> clazz = bean.getClass();
 		InjectionMetadata metadata = findAutowiringMetadata(clazz.getName(), clazz, null);
 		try {
+			/** 真正的注入。 */
 			metadata.inject(bean, null, null);
 		}
 		catch (BeanCreationException ex) {
@@ -540,10 +541,14 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
 		Class<?> targetClass = clazz;
 
+		/**
+		 * 遍历class中所有的需要自动注入的field和method, 最后组装成InjectionMetadata, 用于后续注入.
+		 */
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
+				/** 查找标注了@Autowired的属性. */
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
 					if (Modifier.isStatic(field.getModifiers())) {
@@ -562,6 +567,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
 					return;
 				}
+				/** 查找标注了@Autowired的方法. */
 				MergedAnnotation<?> ann = findAutowiredAnnotation(bridgedMethod);
 				if (ann != null && method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
 					if (Modifier.isStatic(method.getModifiers())) {
@@ -706,6 +712,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			TypeConverter typeConverter = beanFactory.getTypeConverter();
 			Object value;
 			try {
+				/** 实际处理. */
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 			}
 			catch (BeansException ex) {
