@@ -262,8 +262,13 @@ public class AnnotatedBeanDefinitionReader {
 		abd.setScope(scopeMetadata.getScopeName());
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
+		/** 有对@DependsOn, @Lazy的处理. */
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
+			/**
+			 * 如果Lazy.class的值与遍历出的qualifier对象相等，就会将abd对象的lazyInit字段设置为true。
+			 * 如果abd对象的lazyInit字段为true，则后续在启动IOC容器的过程中，就不会创建单例Bean对象
+			 */
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
 					abd.setPrimary(true);

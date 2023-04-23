@@ -252,6 +252,7 @@ public abstract class AnnotationConfigUtils {
 
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
+		/** 解析@Lazy注解中的value属性，并将属性值存入abd对象的lazyInit字段中 */
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
