@@ -513,6 +513,14 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		}
 	}
 
+	/**
+	 * 核心的功能就是对传递进来的每个类进行筛选判断是否被@Value、@Autowired、@Inject注解修饰的方法或者属性，
+	 * 如果是被 @Value、@Autowired、@Inject注解修饰的方法或者属性，就会将这个类记录下来，存入injectionMetadataCache缓存中，为后续的 DI 依赖注作准备。
+	 * @param beanName
+	 * @param clazz
+	 * @param pvs
+	 * @return
+	 */
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
@@ -533,6 +541,11 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		return metadata;
 	}
 
+	/**
+	 * 查找使用@Value、@Autowired、@Inject注解修饰的方法或者属性
+	 * @param clazz
+	 * @return
+	 */
 	private InjectionMetadata buildAutowiringMetadata(Class<?> clazz) {
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
@@ -548,9 +561,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
-				/** 查找标注了@Autowired的属性. */
+				/** 查找标注了@Autowired的属性. 这就是为什么Spring不会对类中的静态字段赋值的原因。*/
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
+					/** 如果解析到的字段是静态字段，则直接返回. */
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
