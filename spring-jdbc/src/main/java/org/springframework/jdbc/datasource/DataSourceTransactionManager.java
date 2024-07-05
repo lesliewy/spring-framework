@@ -240,14 +240,16 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
-		//创建一个数据源事务对象
+		/** 创建一个数据源事务对象 */
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
-		//是否允许当前事务设置保持点
+		/** 是否允许当前事务设置保持点, PROPAGATION.NESTED 会用到. */
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
 		/**
 		 * TransactionSynchronizationManager 事务同步管理器对象(该类中都是局部线程变量)
 		 * 用来保存当前事务的信息,我们第一次从这里去线程变量中获取 事务连接持有器对象 通过数据源为key去获取
 		 * 由于第一次进来开始事务 我们的事务同步管理器中没有被存放.所以此时获取出来的conHolder为null
+		 *
+		 * 本质是将dataSource 和 connection绑定，然后放到线程变量中.  所以这里给集成其他模块的事务提供了一种方式.
 		 */
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
@@ -330,6 +332,11 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		}
 	}
 
+	/**
+	 * 这里所谓的挂起就是将dataSource和connection解绑.
+	 * @param transaction the transaction object returned by {@code doGetTransaction}
+	 * @return
+	 */
 	@Override
 	protected Object doSuspend(Object transaction) {
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
