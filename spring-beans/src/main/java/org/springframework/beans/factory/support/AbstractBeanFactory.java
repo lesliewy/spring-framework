@@ -358,6 +358,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
+					/** 如果是scope bean(即标注了 @Scope("aaa")的bean), 则交由对应scope创建, 比如spring-cloud的 @RefreshScope注解由 RefreshScope类来实现. */
 					String scopeName = mbd.getScope();
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean '" + beanName + "'");
